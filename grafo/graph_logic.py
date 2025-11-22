@@ -1,46 +1,36 @@
-
-# graph_logic.py — você edita APENAS este arquivo nesta atividade.
-# Dica: use apenas LISTAS para a fila/estrutura de dados (nada de deque).
-# Você pode fazer BFS com:
-#   fila = [a]; visitados = [a]
-#   while fila:
-#       u = fila.pop(0)          # remove o primeiro
-#       if u == b: return True
-#       for v in graph.get(u, []):
-#           if v not in visitados:
-#               visitados.append(v)
-#               fila.append(v)
-#   return False
-#
-# Alternativamente, pode usar DFS com uma lista como "pilha":
-#   pilha = [a]; visitados = []
-#   while pilha:
-#       u = pilha.pop()          # remove o último
-#       ...
-#   return False
-
 def connected(graph, a, b):
     """
     Retorna True se existe um caminho (qualquer) entre 'a' e 'b' no grafo não direcionado.
-    'graph' é um dicionário: { "Ana": ["Beto", ...], ... }
-    Implemente uma busca simples (BFS com listas ou DFS com listas).
-    Tratamento recomendado:
-      - Se 'a' ou 'b' não existirem como vértices, você pode retornar False OU levantar ValueError.
-      - Pode normalizar maiúsculas/minúsculas, desde que seja consistente.
+    Usa BFS (Busca em Largura) apenas com listas.
     """
-    # TODO: implemente aqui usando APENAS listas.
-    # Exemplo (BFS com lista), em pseudocódigo:
-    # if a not in graph or b not in graph:
-    #     return False
-    # fila = [a]
-    # visitados = [a]
-    # while fila:
-    #     u = fila.pop(0)
-    #     if u == b:
-    #         return True
-    #     for v in graph.get(u, []):
-    #         if v not in visitados:
-    #             visitados.append(v)
-    #             fila.append(v)
-    # return False
-    raise NotImplementedError("Implemente a função connected usando apenas listas.")
+    # 1. Validação básica: se os nós nem existem no grafo, não podem estar conectados
+    if a not in graph or b not in graph:
+        return False
+
+    # 2. Estruturas de controle
+    # 'fila' armazena os nós que precisamos visitar. Começa pelo ponto de partida 'a'.
+    fila = [a]
+    
+    # 'visitados' evita loops infinitos (ex: A vai pra B, que volta pra A...)
+    visitados = [a]
+
+    # 3. Loop principal (enquanto houver lugares para visitar)
+    while len(fila) > 0:
+        # Pega o primeiro da fila (comportamento FIFO - First In, First Out)
+        atual = fila.pop(0) 
+
+        # Verificamos se chegamos ao destino
+        if atual == b:
+            return True
+
+        # Se não chegamos, olhamos os vizinhos desse nó
+        # graph.get(atual, []) garante que não quebre se o nó não tiver lista de vizinhos
+        vizinhos = graph.get(atual, [])
+        
+        for vizinho in vizinhos:
+            if vizinho not in visitados:
+                visitados.append(vizinho) # Marca como visto
+                fila.append(vizinho)      # Adiciona na fila para visitar depois
+
+    # Se a fila esvaziar e não acharmos 'b', não existe conexão.
+    return False

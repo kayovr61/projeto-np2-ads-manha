@@ -1,6 +1,3 @@
-
-# tree_logic.py — você edita APENAS este arquivo nesta atividade.
-
 class Node:
     def __init__(self, question, yes=None, no=None):
         """
@@ -17,16 +14,27 @@ def is_leaf(node):
 def navigate_tree(node, answers):
     """
     Percorre a árvore a partir de 'node' seguindo a sequência de respostas (lista de strings).
-    Cada resposta deve ser 'sim' ou 'não' (aceite 'nao' como 'não').
-    Retorna a decisão final (string) quando alcançar uma folha.
-    Se a sequência terminar antes de chegar a uma folha, levante ValueError com dica.
-    Se alguma resposta for inválida, levante ValueError com mensagem clara.
-    >>> # Exemplo (não-executável aqui): navigate_tree(root, ["sim", "não"]) -> "É um pardal/pássaro diurno"
     """
-    # TODO: implemente aqui. Sugestão:
-    # - Enquanto o nó atual não for folha:
-    #     - Se não houver mais respostas, levante ValueError("Faltam respostas para concluir a decisão.")
-    #     - Pegue a próxima resposta, normalize para minúsculas, trate 'nao' como 'não'.
-    #     - Se "sim": vá para node.yes; se "não": vá para node.no; senão levante ValueError("Resposta inválida: ...")
-    # - Ao chegar numa folha, retorne node.question (a decisão final).
-    raise NotImplementedError("Implemente a função navigate_tree.")
+    current_node = node
+    idx = 0  # Índice para acompanhar qual resposta estamos lendo
+
+    # Enquanto não chegarmos em uma folha (decisão final)
+    while not is_leaf(current_node):
+        # Verificação de segurança: Se acabaram as respostas mas ainda não é folha
+        if idx >= len(answers):
+            raise ValueError("Faltam respostas para concluir a decisão.")
+
+        # Pega a resposta atual e avança o índice
+        user_response = answers[idx].lower() 
+        idx += 1
+
+        if user_response == 'sim':
+            current_node = current_node.yes
+        elif user_response in ('não', 'nao'):
+            current_node = current_node.no
+        else:
+            # Se o usuário digitou algo que não é sim/não (ex: "talvez")
+            raise ValueError(f"Resposta inválida: '{user_response}'. Use apenas 'sim' ou 'não'.")
+
+    # Se o loop acabou, significa que current_node é uma folha
+    return current_node.question
